@@ -10,16 +10,16 @@ class MandelbrotTest extends FunSuite {
       .take(2)
       .toList
 
-    results shouldBe Seq(0,0)
+    results shouldBe Seq(0, 0)
   }
 
   test("Two number staring from zero for complex") {
     val results = Mandelbrot
-      .sequenceC(Complex(0,0))
+      .sequenceC(Complex(0, 0))
       .take(2)
       .toList
 
-    results shouldBe Seq(0,0)
+    results shouldBe Seq(0, 0)
   }
 
   test("Three number staring from zero") {
@@ -45,15 +45,15 @@ class MandelbrotTest extends FunSuite {
       .take(1)
       .toList
 
-    results shouldBe List(Complex(0.23 , 0.14))
+    results shouldBe List(Complex(0.23, 0.14))
   }
 
-  test("In set"){
+  test("In set") {
     val inSet = Mandelbrot.inSet(Complex(0.2, 0.1))
     inSet shouldBe true
   }
 
-  test("Not in set"){
+  test("Not in set") {
     val inSet = Mandelbrot.inSet(Complex(5, 5))
     inSet shouldBe false
   }
@@ -65,5 +65,26 @@ class MandelbrotTest extends FunSuite {
       .toList
 
     println(results)
+  }
+
+  test("Set") {
+
+    val size = 100
+    val scale = 40d
+
+    val grid = Array.ofDim[String](size,size)
+
+    def inSetToString(inSet: Boolean) = if (inSet) "*" else " "
+
+    (for {
+      x <- 0 until size
+      y <- 0 until size
+    } yield (x, y))
+      .map { case (x, y) => (Complex((x.toDouble - (size.toDouble / 2d)) / scale, (y.toDouble - (size.toDouble / 2d)) / scale), (x, y)) }
+      .map { case (c, coord) => (Mandelbrot.inSet(c), coord) }
+      .map { case (inSet, coord) => (inSetToString(inSet), coord) }
+      .foreach { case (inSet, coord) => grid(coord._1)(coord._2) = inSet }
+
+    grid.foreach { row => println(row.mkString) }
   }
 }
