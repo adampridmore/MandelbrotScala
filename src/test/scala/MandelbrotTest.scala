@@ -27,14 +27,4 @@ class MandelbrotTest extends FunSuite {
 
     assert(results === List(0, -1, 0, -1))
   }
-
-  test("Unfold") {
-    def unfold(initialValue: Int): Seq[Int] = {
-      for (i <- initialValue to initialValue + 10) yield i
-    }
-
-    val range = unfold(1)
-    println(range)
-  }
-
 }
