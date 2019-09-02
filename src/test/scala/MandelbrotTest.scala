@@ -4,24 +4,27 @@ import org.scalatest.Matchers._
 
 class MandelbrotTest extends FunSuite {
   test("Two number staring from zero") {
-    val results = Mandelbrot.sequence(0, 2).toList
+    val results = Mandelbrot
+      .sequence(0)
+      .take(2)
+      .toList
 
-    println(results)
-    results should have length 2
-
-    assert(results === List(0, 0))
+    results shouldBe Seq(0,0)
   }
 
   test("Three number staring from zero") {
-    val results = Mandelbrot.sequence(0, 3).toList
+    val results = Mandelbrot.sequence(0)
+      .take(3)
+      .toList
 
-    results should have length 3
-
-    assert(results === List(0, 0, 0))
+    results shouldBe List(0, 0, 0)
   }
 
   test("Four numbers staring from -1") {
-    val results = Mandelbrot.sequence(-1, 4).toList
+    val results = Mandelbrot
+      .sequence(-1)
+      .take(4)
+      .toList
 
     results should have length 4
 

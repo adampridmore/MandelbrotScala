@@ -1,4 +1,4 @@
-import SequenceHelper._
+import mymandelbrot.SequenceHelper._
 import org.scalatest.{Matchers, WordSpec}
 
 class SequenceHelperSpec extends WordSpec with Matchers {
