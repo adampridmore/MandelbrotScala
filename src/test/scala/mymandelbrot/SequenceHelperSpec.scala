@@ -18,4 +18,11 @@ class SequenceHelperSpec extends WordSpec with Matchers {
         .take(3) shouldBe Seq(1000000,1000001, 1000002)
     }
   }
+
+  "Unfold" should {
+    "generate the fibonacci numbers" in {
+      unfold((0,1))(state => Some(state._1, (state._2,state._1 + state._2)))
+        .take(6) shouldBe Seq(0,1,1,2,3,5)
+    }
+  }
 }
