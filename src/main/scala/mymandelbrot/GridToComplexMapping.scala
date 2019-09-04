@@ -8,17 +8,17 @@ case class GridSize(x: Int, y: Int)
 
 case class ComplexViewPort(bottomLeft: Complex, topRight: Complex)
 
-case class GridToComplexMapping(size: GridSize, viewPort: ComplexViewPort) {
+case class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexViewPort) {
 
-  private val complexWidth = viewPort.topRight.real - viewPort.bottomLeft.real
-  private val complexHeight = viewPort.topRight.imag - viewPort.bottomLeft.imag
+  private val complexWidth = complexViewPort.topRight.real - complexViewPort.bottomLeft.real
+  private val complexHeight = complexViewPort.topRight.imag - complexViewPort.bottomLeft.imag
 
-  private val sizeXDouble = size.x.toDouble
-  private val sizeYDouble = size.y.toDouble
+  private val sizeXDouble = gridSize.x.toDouble
+  private val sizeYDouble = gridSize.y.toDouble
 
   def toComplex(coordinate: GridCoordinate): Complex = {
-    val complexX = mapToView(complexWidth, sizeXDouble, coordinate.x, viewPort.bottomLeft.real)
-    val complexY = mapToView(complexHeight, sizeYDouble, coordinate.y, viewPort.bottomLeft.imag)
+    val complexX = mapToView(complexWidth, sizeXDouble, coordinate.x, complexViewPort.bottomLeft.real)
+    val complexY = mapToView(complexHeight, sizeYDouble, coordinate.y, complexViewPort.bottomLeft.imag)
 
     Complex(complexX, complexY)
   }

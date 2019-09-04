@@ -1,26 +1,20 @@
 import breeze.math.Complex
-import mymandelbrot.{GridCoordinate, Mandelbrot}
+import mymandelbrot.{ComplexViewPort, GridCoordinate, GridSize, GridToComplexMapping, Mandelbrot}
 
 object Main extends App {
 
-  val gridSize = 100
-  val scale = 40d
+  val mapping = GridToComplexMapping(GridSize(100,50), ComplexViewPort(Complex(-2,-1), Complex(0.5,1)))
 
-  val grid = Array.ofDim[String](gridSize, gridSize)
+  val grid = Array.ofDim[String](mapping.gridSize.y, mapping.gridSize.x)
 
   def inSetToString(inSet: Boolean) = if (inSet) "*" else " "
 
-  def gridToComplex(coordinate: GridCoordinate) = {
-    val x = (coordinate.x.toDouble - (gridSize.toDouble / 2d)) / scale
-    val y = (coordinate.y.toDouble - (gridSize.toDouble / 2d)) / scale
-
-    Complex(x, y)
-  }
+  def gridToComplex(coordinate: GridCoordinate) = mapping.toComplex(coordinate)
 
   (for {
-    x <- 0 until gridSize
-    y <- 0 until gridSize
-  } yield GridCoordinate(x, y))
+    x <- 0 until mapping.gridSize.x
+    y <- 0 until mapping.gridSize.y
+  } yield GridCoordinate(x = x, y = y))
     .map { coordinate => (gridToComplex(coordinate), coordinate) }
     .map { case (c, coord) => (Mandelbrot.inSet(c), coord) }
     .map { case (inSet, coord) => (inSetToString(inSet), coord) }
