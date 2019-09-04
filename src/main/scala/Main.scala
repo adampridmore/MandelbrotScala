@@ -3,7 +3,7 @@ import mymandelbrot.{ComplexViewPort, GridCoordinate, GridSize, GridToComplexMap
 
 object Main extends App {
 
-  val mapping = GridToComplexMapping(GridSize(100,50), ComplexViewPort(Complex(-2,-1), Complex(0.5,1)))
+  val mapping = GridToComplexMapping(GridSize(x = 80,y = 32), ComplexViewPort(Complex(-2,-1), Complex(0.5,1)))
 
   val grid = Array.ofDim[String](mapping.gridSize.y, mapping.gridSize.x)
 
