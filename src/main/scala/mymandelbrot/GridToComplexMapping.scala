@@ -17,15 +17,13 @@ case class GridToComplexMapping(size: GridSize, viewPort: ComplexViewPort) {
   private val sizeYDouble = size.y.toDouble
 
   def toComplex(coordinate: GridCoordinate): Complex = {
-    println(s"coordinate.x: ${coordinate.x} size.x: ${size.x} coordinate.x: ${coordinate.x}")
-
-//    def map(complexSize: Double, gridSize: Double, coordinateValue: Int, lowerViewValue: Double): Double = {
-//      ((complexSize / gridSize) * coordinateValue) + lowerViewValue
-//    }
-
-    val complexX = ((complexWidth / sizeXDouble) * coordinate.x) + viewPort.bottomLeft.real
-    val complexY = ((complexHeight / sizeYDouble) * coordinate.y) + viewPort.bottomLeft.imag
+    val complexX = mapToView(complexWidth, sizeXDouble, coordinate.x, viewPort.bottomLeft.real)
+    val complexY = mapToView(complexHeight, sizeYDouble, coordinate.y, viewPort.bottomLeft.imag)
 
     Complex(complexX, complexY)
+  }
+
+  private def mapToView(complexSize: Double, gridSize: Double, coordinateValue: Int, lowerViewValue: Double): Double = {
+    ((complexSize / gridSize) * coordinateValue) + lowerViewValue
   }
 }
