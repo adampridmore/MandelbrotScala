@@ -1,14 +1,10 @@
 import breeze.math.Complex
-import mymandelbrot.Mandelbrot
-
-case class GridCoordinate(x: Int, y: Int)
+import mymandelbrot.{GridCoordinate, Mandelbrot}
 
 object Main extends App {
+
   val gridSize = 100
   val scale = 40d
-
-  val graphBottom = -1d
-  val graphTop = 1d
 
   val grid = Array.ofDim[String](gridSize, gridSize)
 
@@ -25,7 +21,7 @@ object Main extends App {
     x <- 0 until gridSize
     y <- 0 until gridSize
   } yield GridCoordinate(x, y))
-    .map { coordinate => (gridToComplex(coordinate), coordinate)}
+    .map { coordinate => (gridToComplex(coordinate), coordinate) }
     .map { case (c, coord) => (Mandelbrot.inSet(c), coord) }
     .map { case (inSet, coord) => (inSetToString(inSet), coord) }
     .foreach { case (inSet, coord) => grid(coord.y)(coord.x) = inSet }

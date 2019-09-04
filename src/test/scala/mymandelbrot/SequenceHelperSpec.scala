@@ -1,3 +1,5 @@
+package mymandelbrot
+
 import mymandelbrot.SequenceHelper._
 import org.scalatest.{Matchers, WordSpec}
 

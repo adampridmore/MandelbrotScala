@@ -1,5 +1,6 @@
+package mymandelbrot
+
 import breeze.math.Complex
-import mymandelbrot.Mandelbrot
 import org.scalatest.FunSuite
 import org.scalatest.Matchers._
 
