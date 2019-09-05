@@ -1,6 +1,6 @@
-package mymandelbrot
+package org.mandelbrot.sequence
 
-import mymandelbrot.SequenceHelper._
+import org.mandelbrot.sequence.SequenceHelper._
 import org.scalatest.{Matchers, WordSpec}
 
 class SequenceHelperSpec extends WordSpec with Matchers {

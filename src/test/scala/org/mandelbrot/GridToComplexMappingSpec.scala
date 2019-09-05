@@ -1,4 +1,4 @@
-package mymandelbrot
+package org.mandelbrot
 
 import breeze.math.Complex
 import org.scalatest.{Matchers, WordSpec}

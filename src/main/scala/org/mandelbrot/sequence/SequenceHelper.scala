@@ -1,4 +1,4 @@
-package mymandelbrot
+package org.mandelbrot.sequence
 
 object SequenceHelper{
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
