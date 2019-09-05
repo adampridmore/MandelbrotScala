@@ -19,9 +19,9 @@ object Mandelbrot {
     })
   }
 
-  def sequenceC(value: Complex): immutable.Seq[Complex] = {
-    unfold(value)(previousValue => {
-      val nextValue = previousValue * previousValue + value
+  def sequenceC(initialValue: Complex): immutable.Seq[Complex] = {
+    unfold(initialValue)(previousValue => {
+      val nextValue = previousValue.pow(2) + initialValue
       Some(nextValue, nextValue)
     })
   }
