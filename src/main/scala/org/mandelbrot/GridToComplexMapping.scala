@@ -8,7 +8,7 @@ case class GridSize(x: Int, y: Int)
 
 case class ComplexViewPort(bottomLeft: Complex, topRight: Complex)
 
-case class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexViewPort) {
+class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexViewPort) {
 
   private val complexWidth = complexViewPort.topRight.real - complexViewPort.bottomLeft.real
   private val complexHeight = complexViewPort.topRight.imag - complexViewPort.bottomLeft.imag
@@ -28,14 +28,14 @@ case class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexView
   }
 }
 
-case class GridToComplexViewIterator(private val gridSize: GridSize,
-                                     private val complexViewPort: ComplexViewPort)
+class GridToComplexViewIterator(private val gridSize: GridSize,
+                                private val complexViewPort: ComplexViewPort)
   extends GridToComplexMapping(gridSize, complexViewPort) {
 
-  def sequence[R](mapper: Complex => R) : Seq[(GridCoordinate, R)] = (for {
+  def sequence[R](mapper: Complex => R): Seq[(GridCoordinate, R)] = (for {
     x <- 0 until gridSize.x
     y <- 0 until gridSize.y
-  } yield GridCoordinate(x = x, y = y))
+  } yield GridCoordinate(x, y))
     .map { coordinate => (coordinate, toComplex(coordinate)) }
-    .map { case(coordinate, complex) => (coordinate, mapper(complex))}
+    .map { case (coordinate, complex) => (coordinate, mapper(complex)) }
 }

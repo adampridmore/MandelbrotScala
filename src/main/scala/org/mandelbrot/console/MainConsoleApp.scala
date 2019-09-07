@@ -9,11 +9,11 @@ object MainConsoleApp extends App {
     val gridSize =  GridSize(x = 80, y = 32)
     val viewPort = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
 
-    val grid = Array.ofDim[String](gridSize.x, gridSize.y)
+    val grid = Array.ofDim[String](gridSize.y, gridSize.x)
 
     def map(complex: Complex): String = if (Mandelbrot.inSet(complex)) "*" else " "
 
-    GridToComplexViewIterator(gridSize, viewPort)
+    new GridToComplexViewIterator(gridSize, viewPort)
       .sequence(map)
       .foreach { case (coord, value) => grid(coord.y)(coord.x) = value }
 
@@ -21,6 +21,8 @@ object MainConsoleApp extends App {
   }
 
   render()
+
+  0
 }
 
 

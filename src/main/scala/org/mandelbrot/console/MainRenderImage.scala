@@ -12,22 +12,16 @@ object MainRenderImage extends App {
 
   private def render(): Unit = {
     val view = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
-    val mapping = GridToComplexMapping(GridSize(x = 100, y = 100), view)
+    val gridSize = GridSize(x = 100, y = 100)
 
-    val image = new BufferedImage(mapping.gridSize.x, mapping.gridSize.y, BufferedImage.TYPE_INT_RGB)
+    val image = new BufferedImage(gridSize.x, gridSize.y, BufferedImage.TYPE_INT_RGB)
 
-    def inSetToColor(inSet: Boolean) = (if (inSet) Color.black else Color.white).getRGB
-
-    def gridToComplex(coordinate: GridCoordinate) = mapping.toComplex(coordinate)
-
-    (for {
-      x <- 0 until image.getWidth
-      y <- 0 until image.getHeight
-    } yield GridCoordinate(x, y))
-      .map { coordinate => (gridToComplex(coordinate), coordinate) }
-      .map { case (c, coord) => (Mandelbrot.inSet(c), coord) }
-      .map { case (inSet, coord) => (inSetToColor(inSet), coord) }
-      .foreach { case (color, coord) => image.setRGB(coord.x,coord.y, color) }
+    def map(complex: Complex) : Int = {
+      (if (Mandelbrot.inSet(complex)) Color.black else Color.white).getRGB
+    }
+    new GridToComplexViewIterator(gridSize, view)
+      .sequence(map)
+      .foreach{case(coord, color) => image.setRGB(coord.x,coord.y, color)}
 
     val stream = new FileOutputStream("generatedImages/image_mandelbrot.png")
 
@@ -36,6 +30,8 @@ object MainRenderImage extends App {
   }
 
   render()
+
+  0
 }
 
 
