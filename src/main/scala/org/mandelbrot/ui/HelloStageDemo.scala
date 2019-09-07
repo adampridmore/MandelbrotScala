@@ -4,7 +4,7 @@ import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.control.Label
+import scalafx.scene.control._
 import scalafx.scene.layout.BorderPane
 
 object HelloSBT extends JFXApp {
@@ -13,6 +13,7 @@ object HelloSBT extends JFXApp {
       root = new BorderPane {
         padding = Insets(25)
         center = new Label("Hello SBT")
+        bottom = new Button(text = "OK")
       }
     }
   }

@@ -1,11 +1,11 @@
 package org.mandelbrot.console
 
 import breeze.math.Complex
-import org.mandelbrot.{ComplexViewPort, GridCoordinate, GridSize, GridToComplexMapping, Mandelbrot}
+import org.mandelbrot._
 
 object MainConsoleApp extends App {
 
-  val mapping = GridToComplexMapping(GridSize(x = 80,y = 32), ComplexViewPort(Complex(-2,-1), Complex(0.5,1)))
+  val mapping = GridToComplexMapping(GridSize(x = 80, y = 32), ComplexViewPort(Complex(-2, -1), Complex(0.5, 1)))
 
   val grid = Array.ofDim[String](mapping.gridSize.y, mapping.gridSize.x)
 
