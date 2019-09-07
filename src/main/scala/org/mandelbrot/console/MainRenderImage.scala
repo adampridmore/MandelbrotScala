@@ -16,7 +16,7 @@ object MainRenderImage extends App {
 
     val image = new BufferedImage(mapping.gridSize.x, mapping.gridSize.y, BufferedImage.TYPE_INT_RGB)
 
-    def inSetToColor(inSet: Boolean) = (if (inSet) Color.black else Color.white).getRGB()
+    def inSetToColor(inSet: Boolean) = (if (inSet) Color.black else Color.white).getRGB
 
     def gridToComplex(coordinate: GridCoordinate) = mapping.toComplex(coordinate)
 

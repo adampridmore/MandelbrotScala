@@ -1,7 +1,7 @@
 package org.mandelbrot.console
 
-import java.awt.{BasicStroke, Color, Stroke}
 import java.awt.image.BufferedImage
+import java.awt.{BasicStroke, Color}
 import java.io.FileOutputStream
 
 import breeze.math.Complex
@@ -19,23 +19,21 @@ object MainTestImageApp extends App {
     y <- 0 until image.getHeight
   } yield (x, y))
     .foreach {
-      case (x, y) => {
-        image.setRGB(x, y, getColor(x, y).getRGB)
-      }
+      case (x, y) => image.setRGB(x, y, getColor(x, y).getRGB)
     }
 
   val gc = image.createGraphics()
 
   gc.setColor(Color.green)
   gc.setStroke(new BasicStroke(3))
-  gc.drawLine(0,0,100,100)
+  gc.drawLine(0, 0, 100, 100)
+  val stream = new FileOutputStream("generatedImages/image.png")
 
   def getColor(coord: (Int, Int)): Color = coord match {
-    case (x, y) if x > 25 && x < 75 => Color.blue
+    case (x, _) if x > 25 && x < 75 => Color.blue
     case _ => Color.red
   }
 
-  val stream = new FileOutputStream("generatedImages/image.png")
   ImageIO.write(image, "png", stream)
   stream.close()
 }
