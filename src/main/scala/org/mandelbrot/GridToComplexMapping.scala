@@ -28,7 +28,7 @@ class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexViewPort)
   }
 }
 
-class GridToComplexViewIterator(private val gridSize: GridSize,
+case class GridToComplexViewIterator(private val gridSize: GridSize,
                                 private val complexViewPort: ComplexViewPort)
   extends GridToComplexMapping(gridSize, complexViewPort) {
 

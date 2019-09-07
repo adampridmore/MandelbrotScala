@@ -3,7 +3,7 @@ package org.mandelbrot.console
 import breeze.math.Complex
 import org.mandelbrot._
 
-object MainConsoleApp extends App {
+object MainConsoleRender extends App {
 
   def render(): Unit = {
     val gridSize =  GridSize(x = 80, y = 32)
