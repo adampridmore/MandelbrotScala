@@ -5,24 +5,22 @@ import org.mandelbrot._
 
 object MainConsoleApp extends App {
 
-  val mapping = GridToComplexMapping(GridSize(x = 80, y = 32), ComplexViewPort(Complex(-2, -1), Complex(0.5, 1)))
+  def render(): Unit = {
+    val gridSize =  GridSize(x = 80, y = 32)
+    val viewPort = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
 
-  val grid = Array.ofDim[String](mapping.gridSize.y, mapping.gridSize.x)
+    val grid = Array.ofDim[String](gridSize.x, gridSize.y)
 
-  def inSetToString(inSet: Boolean) = if (inSet) "*" else " "
+    def map(complex: Complex): String = if (Mandelbrot.inSet(complex)) "*" else " "
 
-  def gridToComplex(coordinate: GridCoordinate) = mapping.toComplex(coordinate)
+    GridToComplexViewIterator(gridSize, viewPort)
+      .sequence(map)
+      .foreach { case (coord, value) => grid(coord.y)(coord.x) = value }
 
-  (for {
-    x <- 0 until mapping.gridSize.x
-    y <- 0 until mapping.gridSize.y
-  } yield GridCoordinate(x = x, y = y))
-    .map { coordinate => (gridToComplex(coordinate), coordinate) }
-    .map { case (c, coord) => (Mandelbrot.inSet(c), coord) }
-    .map { case (inSet, coord) => (inSetToString(inSet), coord) }
-    .foreach { case (inSet, coord) => grid(coord.y)(coord.x) = inSet }
+    grid.foreach { row => println(row.mkString) }
+  }
 
-  grid.foreach { row => println(row.mkString) }
+  render()
 }
 
 

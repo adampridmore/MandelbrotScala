@@ -27,3 +27,15 @@ case class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexView
     ((complexSize / gridSize) * coordinateValue) + lowerViewValue
   }
 }
+
+case class GridToComplexViewIterator(private val gridSize: GridSize,
+                                     private val complexViewPort: ComplexViewPort)
+  extends GridToComplexMapping(gridSize, complexViewPort) {
+
+  def sequence[R](mapper: Complex => R) : Seq[(GridCoordinate, R)] = (for {
+    x <- 0 until gridSize.x
+    y <- 0 until gridSize.y
+  } yield GridCoordinate(x = x, y = y))
+    .map { coordinate => (coordinate, toComplex(coordinate)) }
+    .map { case(coordinate, complex) => (coordinate, mapper(complex))}
+}
