@@ -7,7 +7,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control._
 import scalafx.scene.layout.BorderPane
 
-object HelloSBT extends JFXApp {
+object HelloStageDemo extends JFXApp {
   stage = new PrimaryStage {
     scene = new Scene {
       root = new BorderPane {

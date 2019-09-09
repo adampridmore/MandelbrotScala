@@ -6,7 +6,7 @@ import org.fractals.mandelbrot.sequence.SequenceHelper.unfold
 import scala.collection.immutable
 
 object Mandelbrot {
-  def inSet(complex: Complex) = {
+  def inSet(complex: Complex): Boolean = {
     !sequenceC(complex)
       .take(100)
       .exists(c => c.abs > 2)

@@ -13,7 +13,7 @@ object MandelbrotConsoleRender extends App {
 
     def map(complex: Complex): String = if (Mandelbrot.inSet(complex)) "*" else " "
 
-    new GridToComplexViewIterator(gridSize, viewPort)
+    GridToComplexViewIterator(gridSize, viewPort)
       .sequence(map)
       .foreach { case (coord, value) => grid(coord.y)(coord.x) = value }
 

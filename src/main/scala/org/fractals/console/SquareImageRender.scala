@@ -7,20 +7,16 @@ import java.io.FileOutputStream
 import javax.imageio.ImageIO
 import org.fractals.mandelbrot._
 
-
-
 object SquareImageRender extends App {
 
   def render(rect: Rectangle, iterations: Int, graphics: Graphics): Unit = {
     iterations match {
-      case 0 => {
+      case 0 =>
         drawRectangle(rect, graphics)
-      }
-      case x => {
+      case x =>
         render(rect.translate(Coordinate(0, 0)), x - 1, graphics)
         render(rect.translate(Coordinate(0, 0)).shrink(0.5), x - 1, graphics)
         render(rect.translate(Coordinate(10, 10)).shrink(0.5), x - 1, graphics)
-      }
     }
   }
 
