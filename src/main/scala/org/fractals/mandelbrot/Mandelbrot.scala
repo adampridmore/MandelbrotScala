@@ -1,7 +1,7 @@
-package org.mandelbrot
+package org.fractals.mandelbrot
 
 import breeze.math.Complex
-import org.mandelbrot.sequence.SequenceHelper.unfold
+import org.fractals.mandelbrot.sequence.SequenceHelper.unfold
 
 import scala.collection.immutable
 

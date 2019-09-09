@@ -1,4 +1,4 @@
-package org.mandelbrot.sequence
+package org.fractals.mandelbrot.sequence
 
 object SequenceHelper{
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {

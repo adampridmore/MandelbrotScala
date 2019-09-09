@@ -1,4 +1,4 @@
-package org.mandelbrot.console
+package org.fractals.console
 
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -6,7 +6,7 @@ import java.io.FileOutputStream
 
 import breeze.math.Complex
 import javax.imageio.ImageIO
-import org.mandelbrot._
+import org.fractals.mandelbrot._
 
 object MandelbrotImageRender extends App {
 

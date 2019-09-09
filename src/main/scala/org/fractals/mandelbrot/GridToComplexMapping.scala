@@ -1,4 +1,4 @@
-package org.mandelbrot
+package org.fractals.mandelbrot
 
 import breeze.math.Complex
 

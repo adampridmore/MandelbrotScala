@@ -1,11 +1,11 @@
-package org.mandelbrot.console
+package org.fractals.console
 
 import java.awt.image.BufferedImage
 import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
 
 import javax.imageio.ImageIO
-import org.mandelbrot._
+import org.fractals.mandelbrot._
 
 case class Point(x: Int, y: Int) {
   def translate(translation: Point): Point = {

@@ -1,7 +1,7 @@
-package org.mandelbrot.console
+package org.fractals.console
 
 import breeze.math.Complex
-import org.mandelbrot._
+import org.fractals.mandelbrot._
 
 object MandelbrotConsoleRender extends App {
 

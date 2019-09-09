@@ -1,4 +1,4 @@
-package org.mandelbrot
+package org.fractals.mandelbrot
 
 import breeze.math.Complex
 import org.scalatest.{Matchers, WordSpec}
@@ -10,7 +10,7 @@ class GridToComplexMappingSpec extends WordSpec with Matchers {
 
     "ComplexViewPort(0,0,100,100)" should {
       val complexViewPort = ComplexViewPort(Complex(0,0), Complex(100,100))
-      val mapping = GridToComplexMapping(gridSize, complexViewPort)
+      val mapping = new GridToComplexMapping(gridSize, complexViewPort)
 
       "map 0,0 to 0,0" in {
         mapping.toComplex(GridCoordinate(0, 0)) shouldBe Complex(0, 0)
@@ -26,7 +26,7 @@ class GridToComplexMappingSpec extends WordSpec with Matchers {
 
     "ComplexViewPort(0,0,50,50)" should {
       val complexViewPort = ComplexViewPort(Complex(0,0), Complex(50,50))
-      val mapping = GridToComplexMapping(gridSize, complexViewPort)
+      val mapping = new GridToComplexMapping(gridSize, complexViewPort)
 
       "map 0,0 to 0,0" in {
         mapping.toComplex(GridCoordinate(0, 0)) shouldBe Complex(0, 0)
@@ -42,7 +42,7 @@ class GridToComplexMappingSpec extends WordSpec with Matchers {
 
     "ComplexViewPort(100,100,200,200)" should {
       val complexViewPort = ComplexViewPort(Complex(100,100), Complex(200,200))
-      val mapping = GridToComplexMapping(gridSize, complexViewPort)
+      val mapping = new GridToComplexMapping(gridSize, complexViewPort)
 
       "map 0,0 to 100,100" in {
         mapping.toComplex(GridCoordinate(0, 0)) shouldBe Complex(100, 100)

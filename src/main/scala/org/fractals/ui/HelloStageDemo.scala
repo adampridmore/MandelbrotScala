@@ -1,4 +1,4 @@
-package org.mandelbrot.ui
+package org.fractals.ui
 
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
