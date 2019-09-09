@@ -8,7 +8,7 @@ import breeze.math.Complex
 import javax.imageio.ImageIO
 import org.mandelbrot._
 
-object MainImageRender extends App {
+object MandelbrotImageRender extends App {
 
   private def render(): Unit = {
     val view = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
