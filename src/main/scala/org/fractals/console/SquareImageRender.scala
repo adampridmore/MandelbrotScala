@@ -24,10 +24,12 @@ object SquareImageRender extends App {
         val transformed = {
           Seq(
             rect,
-            rect.scale(0.5),
+//            rect.scale(0.6),
             {
-              val temp = rect.scale(0.5)
-              temp.translate(Coordinate(temp.width, temp.height))
+              val factor = 0.8
+              val temp = rect.scale(factor)
+//              temp.translate(Coordinate((temp.width * factor).toInt, (temp.height * factor).toInt ))
+              temp.translate(Coordinate(30,30))
             }
           )
         }
@@ -43,7 +45,7 @@ object SquareImageRender extends App {
     val offset = 10
 
     val rectangle = fractals.Rectangle(Coordinate(offset, offset), Coordinate(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
-    render(rectangle, iterations = 10)
+    render(rectangle, iterations = 20)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
@@ -62,9 +64,14 @@ object SquareImageRender extends App {
 
     implicit val context: Context = Context(graphics, gridSize)
 
-    drawScene(gridSize)
-
-    graphics.dispose()
+    try {
+      drawScene(gridSize)
+    } catch {
+      case ex: Exception => {
+        graphics.dispose()
+        throw ex
+      }
+    }
 
     ImageIO.write(image, "png", stream)
     stream.close()
