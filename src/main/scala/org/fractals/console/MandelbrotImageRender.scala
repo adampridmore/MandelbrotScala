@@ -5,28 +5,20 @@ import java.awt.image.BufferedImage
 import java.io.{File, FileOutputStream}
 
 import breeze.math.Complex
-import com.sun.javafx.util.Utils._
 import javax.imageio.ImageIO
+import org.fractals.FileHelpers.open
 import org.fractals.mandelbrot._
 
 object MandelbrotImageRender extends App {
-
-  def open(filename: String): Unit = {
-    (isWindows, isMac) match {
-      case (true, _) => Runtime.getRuntime.exec(Array("cmd.exe", "/c", filename))
-      case (_, true) => Runtime.getRuntime.exec(s"open $filename")
-      case _ => throw new Exception(s"Unknown OS: ${System.getProperty("os.name")}")
-    }
-  }
 
   private def render(): Unit = {
     val view = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
     //        val gridSize = GridSize(x = 2560 * 4, y = 1600 * 4)
     //        val gridSize = GridSize(x = 2560, y = 1600)
     //    val gridSize = GridSize(x = 1024, y = 768)
-    val gridSize = GridSize(x = 320, y = 200)
+    val gridSize = GridSize(width = 320, height = 200)
 
-    val image = new BufferedImage(gridSize.x, gridSize.y, BufferedImage.TYPE_INT_RGB)
+    val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
     def map(complex: Complex): Int = {
       (if (Mandelbrot.inSet(complex)) Color.black else Color.white).getRGB
@@ -35,7 +27,6 @@ object MandelbrotImageRender extends App {
     GridToComplexViewIterator(gridSize, view)
       .sequence(map)
       .foreach { case (coord, color) => image.setRGB(coord.x, coord.y, color) }
-
 
     val filename = s"./generatedImages${File.separator}image_mandelbrot.png"
     println(s"Filename: $filename")

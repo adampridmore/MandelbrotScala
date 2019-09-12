@@ -4,7 +4,7 @@ import breeze.math.Complex
 
 case class GridCoordinate(x: Int, y: Int)
 
-case class GridSize(x: Int, y: Int)
+case class GridSize(width: Int, height: Int)
 
 case class ComplexViewPort(bottomLeft: Complex, topRight: Complex)
 
@@ -13,8 +13,8 @@ class GridToComplexMapping(gridSize: GridSize, complexViewPort: ComplexViewPort)
   private val complexWidth = complexViewPort.topRight.real - complexViewPort.bottomLeft.real
   private val complexHeight = complexViewPort.topRight.imag - complexViewPort.bottomLeft.imag
 
-  private val sizeXDouble = gridSize.x.toDouble
-  private val sizeYDouble = gridSize.y.toDouble
+  private val sizeXDouble = gridSize.width.toDouble
+  private val sizeYDouble = gridSize.height.toDouble
 
   def toComplex(coordinate: GridCoordinate): Complex = {
     val complexX = mapToView(complexWidth, sizeXDouble, coordinate.x, complexViewPort.bottomLeft.real)
@@ -33,8 +33,8 @@ case class GridToComplexViewIterator(private val gridSize: GridSize,
   extends GridToComplexMapping(gridSize, complexViewPort) {
 
   def sequence[R](mapper: Complex => R): Seq[(GridCoordinate, R)] = (for {
-    x <- 0 until gridSize.x
-    y <- 0 until gridSize.y
+    x <- 0 until gridSize.width
+    y <- 0 until gridSize.height
   } yield GridCoordinate(x, y))
     .map { coordinate => (coordinate, toComplex(coordinate)) }
     .map { case (coordinate, complex) => (coordinate, mapper(complex)) }
