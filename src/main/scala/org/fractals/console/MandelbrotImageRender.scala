@@ -11,21 +11,18 @@ import org.fractals.mandelbrot._
 
 object MandelbrotImageRender extends App {
 
-  def open(filename: String) = {
-
-    val cmd = (isWindows, isMac) match {
-      case (true, _) => Array("cmd.exe", "/c", filename)
-      case (_, true) => Array(s"open $filename")
+  def open(filename: String): Unit = {
+    (isWindows, isMac) match {
+      case (true, _) => Runtime.getRuntime.exec(Array("cmd.exe", "/c", filename))
+      case (_, true) => Runtime.getRuntime.exec(s"open $filename")
       case _ => throw new Exception(s"Unknown OS: ${System.getProperty("os.name")}")
     }
-
-    Runtime.getRuntime.exec(cmd)
   }
 
   private def render(): Unit = {
     val view = ComplexViewPort(Complex(-2, -1), Complex(0.5, 1))
-//        val gridSize = GridSize(x = 2560 * 4, y = 1600 * 4)
-//        val gridSize = GridSize(x = 2560, y = 1600)
+    //        val gridSize = GridSize(x = 2560 * 4, y = 1600 * 4)
+    //        val gridSize = GridSize(x = 2560, y = 1600)
     //    val gridSize = GridSize(x = 1024, y = 768)
     val gridSize = GridSize(x = 320, y = 200)
 
@@ -40,7 +37,7 @@ object MandelbrotImageRender extends App {
       .foreach { case (coord, color) => image.setRGB(coord.x, coord.y, color) }
 
 
-    val filename = s"generatedImages${File.separator}image_mandelbrot.png"
+    val filename = s"./generatedImages${File.separator}image_mandelbrot.png"
     println(s"Filename: $filename")
     val stream = new FileOutputStream(filename)
 
