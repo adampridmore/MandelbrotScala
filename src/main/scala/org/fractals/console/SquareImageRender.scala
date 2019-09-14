@@ -5,9 +5,9 @@ import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
 
 import javax.imageio.ImageIO
-import org.fractals.mandelbrot._
-import org.fractals.maths.{Coordinate, Rectangle}
 import org.fractals.FileHelpers
+import org.fractals.mandelbrot._
+import org.fractals.maths.{Matrix, Rectangle, Vector2}
 
 object SquareImageRender extends App {
 
@@ -24,12 +24,12 @@ object SquareImageRender extends App {
         val transformed = {
           Seq(
             rect,
-//            rect.scale(0.6),
+            //            rect.scale(0.6),
             {
-              val factor = 0.8
+              val factor = Matrix(0.8, 0, 0, 0.8)
               val temp = rect.scale(factor)
-//              temp.translate(Coordinate((temp.width * factor).toInt, (temp.height * factor).toInt ))
-              temp.translate(Coordinate(30,30))
+              //              temp.translate(Coordinate((temp.width * factor).toInt, (temp.height * factor).toInt ))
+              temp.translate(Vector2(30, 30))
             }
           )
         }
@@ -44,7 +44,7 @@ object SquareImageRender extends App {
 
     val offset = 10
 
-    val rectangle = Rectangle(Coordinate(offset, offset), Coordinate(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
+    val rectangle = Rectangle(Vector2(offset, offset), Vector2(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
     render(rectangle, iterations = 20)
   }
 
@@ -68,8 +68,7 @@ object SquareImageRender extends App {
       drawScene(gridSize)
     } catch {
       case ex: Exception => {
-        graphics.dispose()
-        throw ex
+        graphics.dispose(); throw ex
       }
     }
 
@@ -85,7 +84,11 @@ object SquareImageRender extends App {
 
   private def drawRectangle(rect: Rectangle, color: Color)(implicit context: Context): Unit = {
     context.graphics.setColor(color)
-    context.graphics.drawRect(rect.bottomLeft.x, context.gridSize.height - rect.topRight.y, rect.width, rect.height)
+    context.graphics.drawRect(
+      rect.bottomLeft.x.toInt,
+      (context.gridSize.height - rect.topRight.y).toInt,
+      rect.width.toInt,
+      rect.height.toInt)
   }
 
   render()

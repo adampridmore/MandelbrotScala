@@ -1,19 +1,21 @@
 package org.fractals.maths
 
-import org.fractals.maths.Coordinate.Coordinate
+case class Rectangle(bottomLeft: Vector2, topRight: Vector2) {
+  val width: Double = topRight.x - bottomLeft.x
+  val height: Double = topRight.y - bottomLeft.y
 
-case class Rectangle(bottomLeft: Coordinate, topRight: Coordinate) {
-  val width: Int = topRight.x - bottomLeft.x
-  val height: Int = topRight.y - bottomLeft.y
-
-  def translate(translation: Coordinate): Rectangle =
+  def translate(translation: Vector2): Rectangle =
     Rectangle(bottomLeft.translate(translation), topRight.translate(translation))
 
+  def scale(factor: Matrix): Rectangle =
+    copy(bottomLeft.scale(factor), topRight.scale(factor))
+
+  @Deprecated
   def scale(factor: Double): Rectangle =
     copy(bottomLeft.scale(factor), topRight.scale(factor))
 }
 
 object Rectangle {
-  def apply(x1: Int, y1: Int, x2: Int, y2: Int): Rectangle =
-    Rectangle(Coordinate(x1, y1), Coordinate(x2, y2))
+  def apply(x1: Double, y1: Double, x2: Double, y2: Double): Rectangle =
+    Rectangle(Vector2(x1, y1), Vector2(x2, y2))
 }

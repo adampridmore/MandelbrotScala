@@ -1,6 +1,7 @@
 package org.fractals.maths
 
-case class Matrix(v11: Int, v21: Int, v12: Int, v22: Int){
+case class Matrix(v11: Double, v21: Double, v12: Double, v22: Double){
+
   def +(that: Matrix): Matrix = {
     Matrix(
       this.v11+that.v11,
