@@ -15,11 +15,11 @@ class RectangleTest extends WordSpec with Matchers {
     }
 
     "translate to (110,220,310,420)" in {
-      rectangle.translate(Coordinate(10, 20)) shouldBe Rectangle(110, 220, 310, 420)
+      rectangle.translate(Vector2(10, 20)) shouldBe Rectangle(110, 220, 310, 420)
     }
 
     "shrink to (100,200,280,380)" in {
-      rectangle.scale(0.9) shouldBe Rectangle(90, 180, 270, 360)
+      rectangle.scale(Matrix(0.9, 0, 0, 0.9)) shouldBe Rectangle(90, 180, 270, 360)
     }
   }
 
@@ -27,12 +27,12 @@ class RectangleTest extends WordSpec with Matchers {
     val rectangle = Rectangle(100, 100, 500, 500)
     "shrink by 0.5 to (50,50,250,250)" in {
       rectangle
-        .scale(0.5) shouldBe Rectangle(50, 50, 250, 250)
+        .scale(Matrix(0.5, 0, 0, 0.5)) shouldBe Rectangle(50, 50, 250, 250)
     }
     "transform to (250,250,500,500)" in {
       rectangle
-        .scale(0.5)
-        .translate(Coordinate(250, 0)) shouldBe Rectangle(300, 50, 500, 250)
+        .scale(Matrix(0.5, 0, 0, 0.5))
+        .translate(Vector2(250, 0)) shouldBe Rectangle(300, 50, 500, 250)
     }
   }
 }

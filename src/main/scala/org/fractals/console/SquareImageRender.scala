@@ -9,6 +9,8 @@ import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
 import org.fractals.maths.{Matrix, Rectangle, Vector2}
 
+import scala.util.Random
+
 object SquareImageRender extends App {
 
   def pickColor(i: Int) = {
@@ -16,36 +18,43 @@ object SquareImageRender extends App {
     colors(i % colors.size)
   }
 
-  def render(rect: Rectangle, iterations: Int, color: Color = Color.black)(implicit context: Context): Unit = {
+  def render(rect: Rectangle, transforms: Seq[Rectangle => Rectangle], iterations: Int)(implicit context: Context): Unit = {
     iterations match {
       case 0 =>
         drawRectangle(rect)
       case x =>
-        val transformed = {
-          Seq(
-            rect,
-            //            rect.scale(0.6),
-            {
-              val factor = Matrix(0.8, 0, 0, 0.8)
-              val temp = rect.scale(factor)
-              //              temp.translate(Coordinate((temp.width * factor).toInt, (temp.height * factor).toInt ))
-              temp.translate(Vector2(30, 30))
-            }
-          )
-        }
 
-        transformed
-          .foreach(t => render(t, x - 1, pickColor(iterations)))
+        transforms
+          .foreach(t => render(t(rect), transforms, x - 1))
     }
   }
 
   def drawScene(gridSize: GridSize)(implicit context: Context): Unit = {
     context.graphics.setColor(Color.black)
 
-    val offset = 10
+    val offset = 20
 
-    val rectangle = Rectangle(Vector2(offset, offset), Vector2(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
-    render(rectangle, iterations = 20)
+    val rectangle = Rectangle(
+      Vector2(offset, offset),
+      Vector2(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
+
+
+    def random() = (Random.nextDouble() * 2) - 1
+
+//    val scale = Matrix(random(), random(), random(), random())
+//    println(s"scale: $scale")
+
+    val scale = Matrix(0.8,0,0.1,0.9)
+
+    val transforms: Seq[Rectangle => Rectangle] = {
+      Seq(
+        rect => rect,
+        rect => rect.scale(scale)
+        //.translate(Vector2(30, 30))
+      )
+    }
+
+    render(rectangle,transforms, iterations = 10)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
@@ -68,7 +77,8 @@ object SquareImageRender extends App {
       drawScene(gridSize)
     } catch {
       case ex: Exception => {
-        graphics.dispose(); throw ex
+        graphics.dispose();
+        throw ex
       }
     }
 

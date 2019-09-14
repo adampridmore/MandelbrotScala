@@ -9,10 +9,6 @@ case class Rectangle(bottomLeft: Vector2, topRight: Vector2) {
 
   def scale(factor: Matrix): Rectangle =
     copy(bottomLeft.scale(factor), topRight.scale(factor))
-
-  @Deprecated
-  def scale(factor: Double): Rectangle =
-    copy(bottomLeft.scale(factor), topRight.scale(factor))
 }
 
 object Rectangle {
