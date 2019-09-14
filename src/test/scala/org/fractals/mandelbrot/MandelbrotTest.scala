@@ -59,12 +59,10 @@ class MandelbrotTest extends FunSuite {
     inSet shouldBe false
   }
 
-  test("Period doubling") {
-    val results = Mandelbrot
-      .sequence(-0.25)
-      .take(100)
-      .toList
-
-    println(results)
-  }
+//  test("Period doubling") {
+//    val results = Mandelbrot
+//      .sequence(-0.25)
+//      .take(100)
+//      .toList
+//  }
 }
