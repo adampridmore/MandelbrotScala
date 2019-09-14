@@ -73,9 +73,10 @@ object SquareImageRender extends App {
 
 
     Range
-      .inclusive(100, 200)
+      .inclusive(0, 100)
       .foreach(index => {
-        val filename = s"generatedImages/${index}image_boxes.png"
+        val indexPadded = index.formatted("%05d")
+        val filename =f"generatedImages/${indexPadded}image_boxes.png"
         val stream = new FileOutputStream(filename)
 
         val graphics: Graphics = image.getGraphics
