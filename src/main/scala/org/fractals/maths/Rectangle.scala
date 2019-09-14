@@ -1,5 +1,7 @@
 package org.fractals.maths
 
+import org.fractals.maths.Coordinate.Coordinate
+
 case class Rectangle(bottomLeft: Coordinate, topRight: Coordinate) {
   val width: Int = topRight.x - bottomLeft.x
   val height: Int = topRight.y - bottomLeft.y
