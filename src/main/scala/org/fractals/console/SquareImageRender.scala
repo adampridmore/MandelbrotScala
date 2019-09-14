@@ -5,7 +5,6 @@ import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
 
 import javax.imageio.ImageIO
-import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
 import org.fractals.maths.{Matrix, Rectangle, Vector2}
 
@@ -18,7 +17,9 @@ object SquareImageRender extends App {
     colors(i % colors.size)
   }
 
-  def render(rect: Rectangle, transforms: Seq[Rectangle => Rectangle], iterations: Int)(implicit context: Context): Unit = {
+  type Transforms = Seq[Rectangle => Rectangle]
+
+  def render(rect: Rectangle, transforms: Transforms, iterations: Int)(implicit context: Context): Unit = {
     iterations match {
       case 0 =>
         drawRectangle(rect)
@@ -29,7 +30,7 @@ object SquareImageRender extends App {
     }
   }
 
-  def drawScene(gridSize: GridSize)(implicit context: Context): Unit = {
+  def drawScene(gridSize: GridSize, transforms: Transforms)(implicit context: Context): Unit = {
     context.graphics.setColor(Color.black)
 
     val offset = 20
@@ -38,26 +39,31 @@ object SquareImageRender extends App {
       Vector2(offset, offset),
       Vector2(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
 
-
-    def random() = (Random.nextDouble() * 2) - 1
-
-//    val scale = Matrix(random(), random(), random(), random())
-//    println(s"scale: $scale")
-
-    val scale = Matrix(0.8,0,0.1,0.9)
-
-    val transforms: Seq[Rectangle => Rectangle] = {
-      Seq(
-        rect => rect,
-        rect => rect.scale(scale)
-        //.translate(Vector2(30, 30))
-      )
-    }
-
-    render(rectangle,transforms, iterations = 10)
+    render(rectangle, transforms, iterations = 10)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
+
+  def buildRandomTransforms(index: Int): Seq[Rectangle => Rectangle] = {
+
+    //scale(Matrix(0.4177198264054247,0.7452955793015856,0.43699313134167417,-0.6718761009775782)), transform(Vector2(-14.5850736370323,-16.283307951952416))
+
+    def randomScale() = (Random.nextDouble() * 2) - 1
+    val scale = Matrix(randomScale(), randomScale(), randomScale(), randomScale())
+
+    def randomTransform() = (Random.nextDouble() * 20) - 20
+    val transform = Vector2(randomTransform(), randomTransform())
+
+    println(s"$index: scale($scale), transform($transform)")
+
+    {
+      Seq(
+        {rect :Rectangle => rect},
+        {rect :Rectangle => rect.scale(scale).translate(Vector2(30, 30))}
+      )
+    }
+  }
+
 
   private def render(): Unit = {
     //    val gridSize = GridSize(width = 320, height = 200)
@@ -65,27 +71,35 @@ object SquareImageRender extends App {
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
-    val filename = "generatedImages/image_boxes.png"
-    val stream = new FileOutputStream(filename)
 
-    val graphics: Graphics = image.getGraphics
-    graphics.fillRect(0, 0, gridSize.width, gridSize.height)
+    Range
+      .inclusive(100, 200)
+      .foreach(index => {
+        val filename = s"generatedImages/${index}image_boxes.png"
+        val stream = new FileOutputStream(filename)
 
-    implicit val context: Context = Context(graphics, gridSize)
+        val graphics: Graphics = image.getGraphics
+        graphics.fillRect(0, 0, gridSize.width, gridSize.height)
 
-    try {
-      drawScene(gridSize)
-    } catch {
-      case ex: Exception => {
-        graphics.dispose();
-        throw ex
-      }
-    }
+        implicit val context: Context = Context(graphics, gridSize)
 
-    ImageIO.write(image, "png", stream)
-    stream.close()
+        try {
 
-    FileHelpers.open(filename)
+          val transforms = buildRandomTransforms(index)
+
+          drawScene(gridSize,transforms)
+        } catch {
+          case ex: Exception => {
+            graphics.dispose();
+            throw ex
+          }
+        }
+
+        ImageIO.write(image, "png", stream)
+        stream.close()
+      })
+
+    //    FileHelpers.open(filename)
   }
 
   private def drawRectangle(rect: Rectangle)(implicit context: Context): Unit = {
