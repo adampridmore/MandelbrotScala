@@ -5,9 +5,9 @@ import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
 
 import javax.imageio.ImageIO
-import org.fractals
 import org.fractals.mandelbrot._
-import org.fractals.{Coordinate, FileHelpers, Rectangle}
+import org.fractals.maths.{Coordinate, Rectangle}
+import org.fractals.FileHelpers
 
 object SquareImageRender extends App {
 
@@ -44,7 +44,7 @@ object SquareImageRender extends App {
 
     val offset = 10
 
-    val rectangle = fractals.Rectangle(Coordinate(offset, offset), Coordinate(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
+    val rectangle = Rectangle(Coordinate(offset, offset), Coordinate(gridSize.width - 1 - offset, gridSize.height - 1 - offset))
     render(rectangle, iterations = 20)
   }
 

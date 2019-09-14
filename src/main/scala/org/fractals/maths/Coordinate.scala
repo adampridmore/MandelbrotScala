@@ -1,4 +1,4 @@
-package org.fractals
+package org.fractals.maths
 
 case class Coordinate(x: Int, y: Int) {
   def scale(factor: Double): Coordinate = Coordinate((x * factor).toInt , (y * factor).toInt)

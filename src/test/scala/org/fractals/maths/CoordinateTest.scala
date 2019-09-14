@@ -1,4 +1,4 @@
-package org.fractals
+package org.fractals.maths
 
 import org.scalatest.{Matchers, WordSpec}
 

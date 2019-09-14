@@ -1,4 +1,4 @@
-package org.fractals
+package org.fractals.maths
 
 case class Rectangle(bottomLeft: Coordinate, topRight: Coordinate) {
   val width: Int = topRight.x - bottomLeft.x
