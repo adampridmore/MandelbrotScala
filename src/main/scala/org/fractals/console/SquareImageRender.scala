@@ -48,10 +48,12 @@ object SquareImageRender extends App {
 
     //scale(Matrix(0.4177198264054247,0.7452955793015856,0.43699313134167417,-0.6718761009775782)), transform(Vector2(-14.5850736370323,-16.283307951952416))
 
-    def randomScale() = (Random.nextDouble() * 2) - 1
+    val random = new Random(index)
+
+    def randomScale() = (random.nextDouble() * 2) - 1
     val scale = Matrix(randomScale(), randomScale(), randomScale(), randomScale())
 
-    def randomTransform() = (Random.nextDouble() * 20) - 20
+    def randomTransform() = (random.nextDouble() * 20) - 20
     val transform = Vector2(randomTransform(), randomTransform())
 
     println(s"$index: scale($scale), transform($transform)")
@@ -73,7 +75,7 @@ object SquareImageRender extends App {
 
 
     Range
-      .inclusive(0, 100)
+      .inclusive(0, 1000)
       .foreach(index => {
         val indexPadded = index.formatted("%05d")
         val filename =f"generatedImages/${indexPadded}image_boxes.png"
