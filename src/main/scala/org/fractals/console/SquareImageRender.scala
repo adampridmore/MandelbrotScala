@@ -3,8 +3,7 @@ package org.fractals.console
 import java.awt.image.BufferedImage
 import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.time.{Instant, LocalDateTime}
+import java.time.Instant
 
 import javax.imageio.ImageIO
 import org.fractals.FileHelpers
@@ -15,7 +14,7 @@ import scala.util.Random
 
 object SquareImageRender extends App {
 
-  val rand = new Random(0)
+  val rand = new Random(10)
 
   def renderIteration(rect: Rectangle, iterations: Int)
                      (implicit context: Context): Unit = {
@@ -28,27 +27,28 @@ object SquareImageRender extends App {
         val width = rect.topRight.x - rect.bottomLeft.x
         val height = rect.topRight.y - rect.bottomLeft.y
 
+        val scale = 0.5
         val rectangles: Seq[Rectangle] = Seq(
           Rectangle(
             rect.bottomLeft.x,
             rect.bottomLeft.y,
-            rect.topRight.x - width / 2,
-            rect.topRight.y - height / 2),
+            rect.topRight.x - width * scale,
+            rect.topRight.y - height * scale),
           Rectangle(
             rect.bottomLeft.x,
-            rect.bottomLeft.y + height / 2,
-            rect.topRight.x - width / 2,
+            rect.bottomLeft.y + height * scale,
+            rect.topRight.x - width * scale,
             rect.topRight.y),
           Rectangle(
-            rect.bottomLeft.x + width / 2,
-            rect.bottomLeft.y + height / 2,
+            rect.bottomLeft.x + width * scale,
+            rect.bottomLeft.y + height * scale,
             rect.topRight.x,
             rect.topRight.y),
           Rectangle(
-            rect.bottomLeft.x + width / 2,
+            rect.bottomLeft.x + width * scale,
             rect.bottomLeft.y,
             rect.topRight.x,
-            rect.topRight.y - height / 2))
+            rect.topRight.y - height * scale))
           .map(r => Rectangle(
             r.bottomLeft.x * wobble,
             r.bottomLeft.y * wobble,
@@ -68,14 +68,14 @@ object SquareImageRender extends App {
 
     val rectangle = Rectangle(0, 0, 1, 1)
 
-    renderIteration(rectangle, iterations = 10)
+    renderIteration(rectangle, iterations = 11)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
 
   private def render(): Unit = {
     //val gridSize = GridSize(width = 200, height = 100)
-    val scale = 3
+    val scale = 4
     val gridSize = GridSize(width = 1024 * scale, height = 768 * scale)
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
@@ -93,10 +93,9 @@ object SquareImageRender extends App {
     try {
       drawScene(gridSize)
     } catch {
-      case ex: Exception => {
-        graphics.dispose();
+      case ex: Exception =>
+        graphics.dispose()
         throw ex
-      }
     }
 
     val formatName = "png"
