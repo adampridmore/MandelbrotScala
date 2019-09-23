@@ -3,19 +3,28 @@ package org.fractals.console
 import java.awt.image.BufferedImage
 import java.awt.{Color, Graphics}
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.time.{Instant, LocalDateTime}
 
 import javax.imageio.ImageIO
 import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
 import org.fractals.maths.Rectangle
 
+import scala.util.Random
+
 object SquareImageRender extends App {
-  def renderIteration(rect: Rectangle, iterations: Int)(implicit context: Context): Unit = {
+
+  val rand = new Random(0)
+
+  def renderIteration(rect: Rectangle, iterations: Int)
+                     (implicit context: Context): Unit = {
+
+    def wobble: Double = 1 - (0.05 * rand.nextDouble())
 
     iterations match {
-      case 0 =>
-        drawRectangle(rect)
-      case x => {
+      case 0 => drawRectangle(rect)
+      case _ =>
         val width = rect.topRight.x - rect.bottomLeft.x
         val height = rect.topRight.y - rect.bottomLeft.y
 
@@ -40,13 +49,17 @@ object SquareImageRender extends App {
             rect.bottomLeft.y,
             rect.topRight.x,
             rect.topRight.y - height / 2))
+          .map(r => Rectangle(
+            r.bottomLeft.x * wobble,
+            r.bottomLeft.y * wobble,
+            r.topRight.x * wobble,
+            r.topRight.y * wobble))
 
-//        println(s"rectangles($iterations): ${rectangles.mkString(",")}")
+        // println(s"rectangles($iterations): ${rectangles.mkString(",")}")
 
         rectangles
           .take(3)
           .foreach(r => renderIteration(r, iterations - 1))
-      }
     }
   }
 
@@ -55,19 +68,21 @@ object SquareImageRender extends App {
 
     val rectangle = Rectangle(0, 0, 1, 1)
 
-    renderIteration(rectangle, iterations = 5)
+    renderIteration(rectangle, iterations = 10)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
 
   private def render(): Unit = {
     //val gridSize = GridSize(width = 200, height = 100)
-    val scale = 1
+    val scale = 3
     val gridSize = GridSize(width = 1024 * scale, height = 768 * scale)
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
-    val filename = f"generatedImages/image_boxes.png"
+    val now = Instant.now.getEpochSecond
+
+    val filename = f"generatedImages/${now}_image_boxes.png"
     val stream = new FileOutputStream(filename)
 
     val graphics: Graphics = image.getGraphics
