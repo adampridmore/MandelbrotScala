@@ -9,11 +9,8 @@ import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
 import org.fractals.maths.Rectangle
 
-//case class ViewPort(bottomLeft: Vector2, topRight: Vector2)
-
-object SquareImageRender2 extends App {
-
-  def render2(rect: Rectangle, iterations: Int)(implicit context: Context): Unit = {
+object SquareImageRender extends App {
+  def renderIteration(rect: Rectangle, iterations: Int)(implicit context: Context): Unit = {
 
     iterations match {
       case 0 =>
@@ -44,11 +41,11 @@ object SquareImageRender2 extends App {
             rect.topRight.x,
             rect.topRight.y - height / 2))
 
-        println(s"rectangles($iterations): ${rectangles.mkString(",")}")
+//        println(s"rectangles($iterations): ${rectangles.mkString(",")}")
 
         rectangles
           .take(3)
-          .foreach(r => render2(r, iterations - 1))
+          .foreach(r => renderIteration(r, iterations - 1))
       }
     }
   }
@@ -56,19 +53,17 @@ object SquareImageRender2 extends App {
   def drawScene(gridSize: GridSize)(implicit context: Context): Unit = {
     context.graphics.setColor(Color.black)
 
-    val offset = 20
-
     val rectangle = Rectangle(0, 0, 1, 1)
 
-    render2(rectangle, iterations = 10)
+    renderIteration(rectangle, iterations = 5)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
 
   private def render(): Unit = {
-    //    val gridSize = GridSize(width = 320, height = 200)
     //val gridSize = GridSize(width = 200, height = 100)
-    val gridSize = GridSize(width = 1024, height = 768)
+    val scale = 1
+    val gridSize = GridSize(width = 1024 * scale, height = 768 * scale)
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
@@ -89,7 +84,8 @@ object SquareImageRender2 extends App {
       }
     }
 
-    ImageIO.write(image, "png", stream)
+    val formatName = "png"
+    ImageIO.write(image, formatName, stream)
     stream.close()
 
     FileHelpers.open(filename)
