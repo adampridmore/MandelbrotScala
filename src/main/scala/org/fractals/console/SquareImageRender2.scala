@@ -7,18 +7,49 @@ import java.io.FileOutputStream
 import javax.imageio.ImageIO
 import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
-import org.fractals.maths.{Rectangle, Vector2}
+import org.fractals.maths.Rectangle
 
-case class ViewPort(bottomLeft: Vector2, topRight: Vector2)
+//case class ViewPort(bottomLeft: Vector2, topRight: Vector2)
 
 object SquareImageRender2 extends App {
 
-  def render(rect: Rectangle, viewPort: ViewPort, iterations: Int)(implicit context: Context): Unit = {
+  def render2(rect: Rectangle, iterations: Int)(implicit context: Context): Unit = {
+
     iterations match {
       case 0 =>
-        drawRectangle(rect, viewPort)
-      case x =>
-        render(rect, viewPort, x - 1)
+        drawRectangle(rect)
+      case x => {
+        val width = rect.topRight.x - rect.bottomLeft.x
+        val height = rect.topRight.y - rect.bottomLeft.y
+
+        val rectangles: Seq[Rectangle] = Seq(
+          Rectangle(
+            rect.bottomLeft.x,
+            rect.bottomLeft.y,
+            rect.topRight.x - width / 2,
+            rect.topRight.y - height / 2),
+          Rectangle(
+            rect.bottomLeft.x,
+            rect.bottomLeft.y + height / 2,
+            rect.topRight.x - width / 2,
+            rect.topRight.y),
+          Rectangle(
+            rect.bottomLeft.x + width / 2,
+            rect.bottomLeft.y + height / 2,
+            rect.topRight.x,
+            rect.topRight.y),
+          Rectangle(
+            rect.bottomLeft.x + width / 2,
+            rect.bottomLeft.y,
+            rect.topRight.x,
+            rect.topRight.y - height / 2))
+
+        println(s"rectangles($iterations): ${rectangles.mkString(",")}")
+
+        rectangles
+          .take(3)
+          .foreach(r => render2(r, iterations - 1))
+      }
     }
   }
 
@@ -27,20 +58,17 @@ object SquareImageRender2 extends App {
 
     val offset = 20
 
-    val rectangle = Rectangle(0.1, 0.1, 0.9, 0.9)
+    val rectangle = Rectangle(0, 0, 1, 1)
 
-    val viewPort = ViewPort(Vector2.zero, Vector2(gridSize))
-
-    drawRectangle(rectangle, viewPort)
-
-    //    render(rectangle, viewPort, iterations = 10)
+    render2(rectangle, iterations = 10)
   }
 
   case class Context(graphics: Graphics, gridSize: GridSize)
 
   private def render(): Unit = {
     //    val gridSize = GridSize(width = 320, height = 200)
-    val gridSize = GridSize(width = 200, height = 100)
+    //val gridSize = GridSize(width = 200, height = 100)
+    val gridSize = GridSize(width = 1024, height = 768)
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
@@ -67,15 +95,13 @@ object SquareImageRender2 extends App {
     FileHelpers.open(filename)
   }
 
-  private def drawRectangle(rect: Rectangle, viewPort: ViewPort)(implicit context: Context): Unit = {
-    context.graphics.setColor(Color.black)
-
-    def mapPointToX(x: Double) = {
-      x * (viewPort.topRight.x - viewPort.bottomLeft.x)
+  private def drawRectangle(rect: Rectangle)(implicit context: Context): Unit = {
+    def mapPointToX(x: Double): Double = {
+      x * context.gridSize.width
     }
 
-    def mapPointToY(y: Double) = {
-      y * (viewPort.topRight.y - viewPort.bottomLeft.y)
+    def mapPointToY(y: Double): Double = {
+      y * context.gridSize.height
     }
 
     val drawRectValues = (
@@ -83,6 +109,8 @@ object SquareImageRender2 extends App {
       mapPointToY(rect.bottomLeft.y).toInt,
       mapPointToX(rect.topRight.x - rect.bottomLeft.x).toInt,
       mapPointToY(rect.topRight.y - rect.bottomLeft.y).toInt)
+
+    context.graphics.setColor(Color.black)
 
     (context.graphics.drawRect _ tupled) (drawRectValues)
   }
