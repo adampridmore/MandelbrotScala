@@ -15,7 +15,7 @@ class Vector2Spec extends WordSpec with Matchers {
     }
 
     "+ by vector2(30,40)" in {
-      Vector2(10,20) + Vector2(30,40) shouldBe Vector2(40,60)
+      Vector2(10, 20) + Vector2(30, 40) shouldBe Vector2(40, 60)
     }
   }
 }
