@@ -10,16 +10,24 @@ import org.fractals.FileHelpers
 import org.fractals.mandelbrot._
 import org.fractals.maths.Rectangle
 
+import scala.language.postfixOps
 import scala.util.Random
 
 object SquareImageRender extends App {
+  implicit class Pipe[T](val v: T) extends AnyVal {
+    def |>[U] (f: T => U) = f(v)
+  }
 
   val rand = new Random(10)
 
   def renderIteration(rect: Rectangle, iterations: Int)
                      (implicit context: Context): Unit = {
 
-    def wobble: Double = 1 - (0.05 * rand.nextDouble())
+
+    def toPosNeg(boolean: Boolean) = if (boolean) 1 else -1
+
+//    def wobble: Double = (rect.width * rand.nextDouble() * context.wobbleRange) * (rand.nextBoolean() |> toPosNeg)
+    def wobble: Double = (rect.width * context.wobbleRange)
 
     iterations match {
       case 0 => drawRectangle(rect)
@@ -50,10 +58,10 @@ object SquareImageRender extends App {
             rect.topRight.x,
             rect.topRight.y - height * scale))
           .map(r => Rectangle(
-            r.bottomLeft.x * wobble,
-            r.bottomLeft.y * wobble,
-            r.topRight.x * wobble,
-            r.topRight.y * wobble))
+            r.bottomLeft.x + wobble,
+            r.bottomLeft.y + wobble,
+            r.topRight.x - wobble,
+            r.topRight.y - wobble))
 
         // println(s"rectangles($iterations): ${rectangles.mkString(",")}")
 
@@ -71,24 +79,25 @@ object SquareImageRender extends App {
     renderIteration(rectangle, iterations = 11)
   }
 
-  case class Context(graphics: Graphics, gridSize: GridSize)
+  case class Context(graphics: Graphics, gridSize: GridSize, wobbleRange: Double)
 
-  private def render(): Unit = {
+  private def render(now: Instant)(index: Int): Unit = {
+    println(s"index: $index")
+
     //val gridSize = GridSize(width = 200, height = 100)
-    val scale = 4
+    val scale = 1
     val gridSize = GridSize(width = 1024 * scale, height = 768 * scale)
+
 
     val image = new BufferedImage(gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB)
 
-    val now = Instant.now.getEpochSecond
-
-    val filename = f"generatedImages/${now}_image_boxes.png"
+    val filename = f"generatedImages/${now.getEpochSecond}_${index}_image_boxes.png"
     val stream = new FileOutputStream(filename)
 
     val graphics: Graphics = image.getGraphics
     graphics.fillRect(0, 0, gridSize.width, gridSize.height)
 
-    implicit val context: Context = Context(graphics, gridSize)
+    implicit val context: Context = Context(graphics, gridSize, wobbleRange = index * 0.001)
 
     try {
       drawScene(gridSize)
@@ -102,7 +111,7 @@ object SquareImageRender extends App {
     ImageIO.write(image, formatName, stream)
     stream.close()
 
-    FileHelpers.open(filename)
+//    FileHelpers.open(filename)
   }
 
   private def drawRectangle(rect: Rectangle)(implicit context: Context): Unit = {
@@ -125,7 +134,10 @@ object SquareImageRender extends App {
     (context.graphics.drawRect _ tupled) (drawRectValues)
   }
 
-  render()
+  val now = Instant.now
+
+  (for(
+    x <- 0 to 100
+  ) yield x)
+    .foreach(render(now))
 }
-
-
