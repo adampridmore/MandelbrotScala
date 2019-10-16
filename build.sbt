@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   "org.scalanlp" %% "breeze" % "1.0",
   "org.scalanlp" %% "breeze-natives" % "1.0",
   "org.scalanlp" %% "breeze-viz" % "1.0",
-  "org.scalafx" %% "scalafx" % "8.0.192-R14"
+  "org.scalafx" %% "scalafx" % "8.0.192-R14",
+  "org.reactivemongo" %% "reactivemongo" % "0.18.7"
 )
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
