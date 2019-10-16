@@ -32,37 +32,46 @@ trait MandelbrotBson {
     Macros.reader[MandelbrotImage]
 }
 
+trait Collection {
+
+}
 
 class MandelbrotRepository extends MandelbrotBson {
 
-  import ExecutionContext.Implicits.global // use any appropriate context
+  import ExecutionContext.Implicits.global
 
   val driver: MongoDriver = MongoDriver()
 
   val mongoUri = "mongodb://localhost:27017/mandelbrot-test"
 
   // TODO: naked gets x 2
-  val databaseName = MongoConnection.parseURI(mongoUri).get.db.get
+  val databaseName: String = MongoConnection.parseURI(mongoUri).get.db.get
+
+  val collectionName = "mandelbrotImages"
 
   def fetchById(id: String): Future[Option[MandelbrotImage]] = {
     collection
-      .flatMap(_.find(document("id" -> id))
-        .cursor[MandelbrotImage]().headOption)
+      .flatMap(_
+        .find(document("id" -> id), projection = None)
+        .cursor[MandelbrotImage]()
+        .headOption)
   }
 
   def save(image: MandelbrotImage): Future[Unit] = {
-    collection.map(_.insert(ordered = false).one(image))
+    collection
+      .flatMap(_.insert(ordered = false).one(image))
+      .map(_=> Unit)
   }
 
-  def collection: Future[BSONCollection] = {
-    driver.connection(mongoUri)
-      .map { mongoConnection: MongoConnection => mongoConnection.database(databaseName) }
-      .map { fDb: Future[DefaultDB] =>
-        fDb.map(db => {
-          val collection: BSONCollection = db.collection("mandelbrotImages")
-          collection
-        })
-      }.get
+  def collection: Future[BSONCollection] = collectionByName(collectionName)
+
+  def collectionByName(name: String) : Future[BSONCollection] = {
+    val connection: MongoConnection = driver.connection(mongoUri).get
+
+    for {
+      db <- connection.database(databaseName)
+      coll: BSONCollection = db.collection(name)
+    } yield coll
   }
 }
 
