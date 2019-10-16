@@ -27,38 +27,42 @@ case class MandelbrotImage(id: Id = newId(), name: String, createdTimestamp: Dat
 trait MandelbrotBson {
   implicit def imageWriter: BSONDocumentWriter[MandelbrotImage] =
     Macros.writer[MandelbrotImage]
+
+  implicit def imageReader: BSONDocumentReader[MandelbrotImage] =
+    Macros.reader[MandelbrotImage]
 }
+
 
 class MandelbrotRepository extends MandelbrotBson {
 
   import ExecutionContext.Implicits.global // use any appropriate context
 
+  val driver: MongoDriver = MongoDriver()
 
   val mongoUri = "mongodb://localhost:27017/mandelbrot-test"
 
-  def fetchById(id: String): Future[MandelbrotImage] = {
-    Future.successful(MandelbrotImage(name = "foo"))
+  // TODO: naked gets x 2
+  val databaseName = MongoConnection.parseURI(mongoUri).get.db.get
+
+  def fetchById(id: String): Future[Option[MandelbrotImage]] = {
+    collection
+      .flatMap(_.find(document("id" -> id))
+        .cursor[MandelbrotImage]().headOption)
   }
 
   def save(image: MandelbrotImage): Future[Unit] = {
+    collection.map(_.insert(ordered = false).one(image))
+  }
 
-
-    // Connect to the database: Must be done only once per application
-    val driver: MongoDriver = MongoDriver()
-
-    // TODO: naked gets x 2
-    val databaseName = MongoConnection.parseURI(mongoUri).get.db.get
-
+  def collection: Future[BSONCollection] = {
     driver.connection(mongoUri)
-      .map((mongoConnection: MongoConnection) => mongoConnection.database(databaseName))
-      .map((fDb: Future[DefaultDB]) =>
-        fDb.flatMap(db =>{
-          val collection: BSONCollection =  db.collection("mandelbrotImages")
-          val x: Future[WriteResult] = collection.insert(ordered = false).one(image)
-          x
-        })).get.map(_ => Unit)
-
-//    Future.successful()
+      .map { mongoConnection: MongoConnection => mongoConnection.database(databaseName) }
+      .map { fDb: Future[DefaultDB] =>
+        fDb.map(db => {
+          val collection: BSONCollection = db.collection("mandelbrotImages")
+          collection
+        })
+      }.get
   }
 }
 
@@ -79,11 +83,11 @@ class MandelbrotRepositorySpec extends WordSpec with Matchers {
       val repository = new MandelbrotRepository()
       val image = MandelbrotImage(name = "Image2")
 
-      await (repository.save(image))
+      await(repository.save(image))
 
       val foundImage = await(repository.fetchById(image.id))
 
-      foundImage shouldBe image
+      foundImage.get shouldBe image
     }
   }
 }
