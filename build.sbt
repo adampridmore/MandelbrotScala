@@ -13,12 +13,7 @@ libraryDependencies ++= Seq(
   "org.scalanlp" %% "breeze-natives" % "1.0",
   "org.scalanlp" %% "breeze-viz" % "1.0",
   "org.scalafx" %% "scalafx" % "8.0.192-R14",
-  "org.reactivemongo" %% "reactivemongo" % "0.18.7",
-  "org.apache.logging.log4j" % "log4j-api" % "2.12.1",
-  "org.apache.logging.log4j" % "log4j-core" % "2.12.1",
-  "org.apache.logging.log4j" % "slf4j-api" % "2.12.1",
-  "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.12.1",
-  "org.apache.logging.log4j" %% "log4j-api-scala" % "11.0"
+  "org.reactivemongo" %% "reactivemongo" % "0.18.7"
 )
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
