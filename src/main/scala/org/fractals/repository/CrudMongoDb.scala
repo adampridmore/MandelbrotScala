@@ -6,7 +6,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait CrudMongoDb extends MongoUri {
 
-  implicit def ec: ExecutionContext
+  implicit val ec: ExecutionContext
 
   private val driver: MongoDriver = MongoDriver()
 

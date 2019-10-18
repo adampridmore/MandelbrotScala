@@ -2,28 +2,17 @@ package org.fractals.repository
 
 import org.fractals.domain.MandelbrotImage
 import org.scalatest.{Matchers, WordSpec}
-import reactivemongo.bson.{BSONDocumentReader, BSONDocumentWriter, Macros}
 
-import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
 
 class MandelbrotRepositorySpec extends WordSpec with Matchers {
-  trait MandelbrotBson {
-    implicit def imageWriter: BSONDocumentWriter[MandelbrotImage] =
-      Macros.writer[MandelbrotImage]
-
-    implicit def imageReader: BSONDocumentReader[MandelbrotImage] =
-      Macros.reader[MandelbrotImage]
-  }
 
   trait MongoUriForTesting extends MongoUri {
     override def mongoUri: String = "mongodb://localhost:27017/mandelbrot-test"
   }
 
-  class MandelbrotImageRepository2(implicit val ec: ExecutionContext)
-    extends CrudMongoRepository[MandelbrotImage] with MongoUriForTesting with MandelbrotBson
-
-  val repository = new MandelbrotImageRepository2
+  val repository = new MandelbrotImageRepository with MongoUriForTesting
 
   def await[T](future: Future[T]): T = {
     import scala.concurrent.duration._
@@ -41,7 +30,7 @@ class MandelbrotRepositorySpec extends WordSpec with Matchers {
 
       await(repository.save(image))
 
-      val foundImage = await(repository.fetchById(image.id))
+      val foundImage: Option[MandelbrotImage] = await(repository.fetchById(image.id))
 
       foundImage.get shouldBe image
     }
