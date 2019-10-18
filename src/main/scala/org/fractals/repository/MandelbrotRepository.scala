@@ -1,25 +1,29 @@
 package org.fractals.repository
 
 import org.fractals.domain.MandelbrotImage
+
 import reactivemongo.bson.document
+
 import scala.concurrent.{ExecutionContext, Future}
 
-class MandelbrotRepository(implicit val ec: ExecutionContext)
+abstract class MandelbrotRepository(implicit val ec: ExecutionContext)
   extends MandelbrotBson with MandelbrotMongoCollection {
 
-  def collectionName = "mandelbrotImages"
+  def collectionName() = "mandelbrotImages"
 
   def fetchById(id: String): Future[Option[MandelbrotImage]] = {
-    collection
-      .flatMap(_
-        .find(document("id" -> id), projection = None)
-        .cursor[MandelbrotImage]()
-        .headOption)
+    val query = document("id" -> id)
+
+    for {
+      coll <- collection
+      image <- coll.find(query, projection = None).one
+    } yield image
   }
 
   def save(image: MandelbrotImage): Future[Unit] = {
-    collection
-      .flatMap(_.insert(ordered = false).one(image))
-      .map(_ => Unit)
+    for {
+      coll <- collection
+      _ <- coll.insert(ordered = false).one(image)
+    } yield Unit
   }
 }

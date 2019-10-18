@@ -3,17 +3,19 @@ package org.fractals.repository
 import org.fractals.domain.MandelbrotImage
 import org.scalatest.{Matchers, WordSpec}
 
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
-import scala.language.postfixOps
 
-class MandelbrotRepositorySpec extends WordSpec with Matchers {
+class MandelbrotRepository2Spec extends WordSpec with Matchers {
 
   trait MongoUriForTesting extends MongoUri {
     override def mongoUri: String = "mongodb://localhost:27017/mandelbrot-test"
   }
 
-  val repository: MandelbrotRepository = new MandelbrotRepository() with MongoUriForTesting
+  class MandelbrotImageRepository2(implicit val ec: ExecutionContext)
+    extends CrudRepository[MandelbrotImage] with MongoUriForTesting with MandelbrotBson
+
+  val repository: CrudRepository[MandelbrotImage] = new MandelbrotImageRepository2
 
   def await[T](future: Future[T]): T = {
     import scala.concurrent.duration._
@@ -21,7 +23,7 @@ class MandelbrotRepositorySpec extends WordSpec with Matchers {
     Await.result(future, 5 seconds)
   }
 
-  "A repository" can {
+  "A repository2" can {
     "save" in {
       repository.save(MandelbrotImage(name = "Image1"))
     }
